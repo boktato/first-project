@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <title>개인 소개 페이지</title>
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .p4_body {
+            height: 100vh;
+            width: 100vw;
+            background-color: peachpuff;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .p4_title {
+            max-width: 100%;
+            width: 100%;
+            height: 150px;
+            margin: auto;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .p4_ims {
+            width: 80%;
+            margin: 20px auto 0 auto;
+
+            display: block;
+        }
+
+        .p4_img > img {
+            width: 30%;
+            height: 30%;
+
+            margin: 20px 0 30px auto;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .p4_text {
+            margin: 0 0 50px 20px;
+        }
+
+        .p4_post {
+            background-color: white;
+            max-width: 500px;
+            width: 95%;
+            margin: 20px auto 0 auto;
+
+            box-shadow: 0 0 5px 0 gray;
+            padding: 20px;
+        }
+
+        .p4_post-btn {
+            margin: 15px 0 0 0;
+        }
+
+        .p4_title {
+            font-size: 70px;
+            font-weight: bolder;
+        }
+
+        .btn-sm {
+            color: red;
+
+            width: 30px;
+            height: 30px;
+
+            float: right; /*  버튼을 오른쪽 정렬함.  */
+            font-weight: bolder; /*  글자의 굵기를 정함.  */
+            border-radius: 5px;
+        }
+
+        .p4_card {
+            background-color: white;
+            max-width: 500px;
+            width: 95%;
+            margin: 20px auto 0 auto;
+
+            box-shadow: 0 0 2px 0 gray;
+            padding: 5px 0 15px 0;
+        }
+
+        .blockquote {
+            padding: 10px 10px 0 10px;      /*  이거 해야 좀 정돈된 것처럼 보임  */
+        }
+
+        .p4_card-box {
+            max-width: 500px;
+            width: 95%;
+            margin: 0 auto 0 auto;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            p4_show_comment()
+        });
+
+        function p4_save_comment() {
+            let p4_name = $('#p4_name').val()
+            let p4_comment = $('#p4_comment').val()
+            $.ajax({
+                type: "POST",
+                url: "/p4_user",
+                data: {p4_name_give: p4_name, p4_comment_give: p4_comment},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function p4_show_comment() {
+            $.ajax({
+                type: 'GET',
+                url: '/p4_user',
+                data: {},
+                success: function (response) {
+                    let p4_rows = response['p4_comments']
+                    for (let i = 0; i < p4_rows.length; i++) {
+                        let p4_name = p4_rows[i]['p4_name']
+                        let p4_comment = p4_rows[i]['p4_comment']
+                        let p4_num = p4_rows[i]['p4_num']
+                        let p4_done = p4_rows[i]['p4_done']
+                        let p4_temp_html = ``
+                        if (p4_done == 0) {
+                            p4_temp_html =
+                                `<div class="p4_card">
+                                    <blockquote class="blockquote mb-0">
+                                        <button onclick="p4_delete_comment(${p4_num})" type="button" class="btn-sm btn-outline-dark">X</button>
+                                        <p>${p4_comment}</p>
+                                        <footer class="blockquote-footer">${p4_name}</footer>
+                                    </blockquote>
+                                </div>`
+                        } else {
+                            p4_temp_html = ``
+                        }
+                        $('#p4_comment-list').append(p4_temp_html)
+                    }
+                }
+            })
+        }
+
+        function p4_delete_comment(p4_num) {
+            $.ajax({
+                type: "POST",
+                url: "/p4_user/p4_done",
+                data: {p4_num_give: p4_num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+    </script>
+</head>
+<body class="p4_body">
+<h1 class="p4_title">나 진석쓰 27살인디</h1>
+
+<div class="p4_ims">
+    <div class="p4_img">
+        <img src="https://velog.velcdn.com/images/fimjsl/profile/cf8fab7c-6026-4ad3-afa3-cbbc792077e9/image.jpg"
+             class="img">
+    </div>
+    <h4>1. [팀]과 [자신]에 대한 설명 및 MBTI</h4>
+    <div class="p4_text">
+        <t>- 96년생 귀요미 막내 두명이 있구요, 또 저희 위로 쪼금 덜 귀여운 세분의 팀원분들이 더 계십니다.<br>
+            제 MBIT는 ISFP 입니다. 근데 I를 제외한 나머지 항목들은 6:4 정도로 상당히 애매한, 언제든 바뀔 수 있는 그런 경향이 있습니다.<br>
+        </t>
+    </div>
+    <h4>2. 객관적으로 살펴본 자신의 장점</h4>
+    <div class="p4_text">
+        <p>
+            <t>- 단점은 100개쯤 객관적으로 평가 할 수 있는데, 장점을 얘기하라는 게 항상 어렵더라구요<br>
+                음.. 게임 잘한다? 제가 좀 특히 게임할때 적응이 빠르고 실력의 상승곡선이 빠른편이에요. 재밌으면 분석하면서 하는 편이거든요<br>
+                그리고 친구들 상담을 잘 해주는 편입니다. 위로가 필요한 친구에겐 위로를, 객관적인 판단과 피드백이 필요한 친구에겐 그에 맞는 피드백을.<br>
+            </t>
+        </p>
+    </div>
+    <h4>3. 협업을 하는 과정에서의 자신의 스타일</h4>
+    <div class="p4_text">
+        <p>
+            <t>- 협업을 할때는 잘못된 방향으로 나아가면 안된다고 생각합니다. 잘못하면 팀원 전체가 불행해질 수 있거든요.<br>
+                그래서 최대한 좋은 의견을 내기 위해 생각하고, 그럼에도 더 좋은 의견이 있다면 곧바로 따라가는 편입니다.<br>
+                작업물의 퀄리티를 방해하지 않는 선에서 서로에게 스트레스를 주지 않으면서 협업하는게 가장 중요하다고 생각합니다.
+            </t>
+        </p>
+    </div>
+    <h4>4. 우리 팀만의 특징과 추구하는 궁극적인 목표</h4>
+    <div class="p4_text">
+        <p>
+            <t>- 귀여움이 특징이죠. 추구하는 궁극적인 목표도 귀여움입니다. 귀여운게 최고야.<br>
+                - 또 다른 목표는 기능 구현 가이드에서 요구하는 것을 최대한 지키는 것 입니다.<br>
+                이는 튜터님에게 여쭤보면서 더욱 확실해 진 것인데, 잘 하는 한명이 양식을 이쁘게 만들고 복사하는게 아니라<br>
+                강의를 들으면서 배운 내용을 토대로 각자가 기능을 생각하고 구현해내자는 것으로 의견이 모아졌습니다.
+            </t>
+        </p>
+    </div>
+    <h4>5. 우리 팀의 약속</h4>
+    <div class="p4_text">
+        <p>
+            <t>- 보통 팀장님께서 오더를 내려 주십니다. <br>
+                <li>오전에는 이런 이런거 하자</li>
+                <li>오후까지는 이런거 만들어 놓자</li>
+                <li>개인 페이지는 완전히 혼자 만들어 보자</li>
+                <br>
+                이런 식으로요. 그래서 저희 팀원들이 각자 페이지의 모양이나 기능이 다릅니다.
+            </t>
+        </p>
+    </div>
+    <h4>6. 팀원들의 블로그 주소</h4>
+    <div class="p4_text">
+        <p>
+            <t>- 이진석 블로그 <a href="https://velog.io/@fimjsl">구경하러 가기</a></t>
+        </p>
+    </div>
+    <h4>💬 TMI</h4>
+    <div class="p4_text">
+        <p>
+            <t>" 나는 집에서 일하거나 누가 꼬박꼬박 돈만 쥐어주면 1년동안 집에 있을 수 있다 "<br><br>
+                제가 평소에 친구들이나 주변 지인들이랑 만날 때 입에 달고사는 말입니다.<br>
+                다리가 퇴화될까 걱정되는거 말곤 너무좋네요 집에서 안나가는거 ㅎㅎ<br><br>
+                다들 미니프로젝트 고생 하셨습니다.
+            </t>
+        </p>
+    </div>
+</div>
+
+<div class="p4_post" id="p4_post-box">
+    <div class="p4_user-id">
+        <input type="text" class="form-control" id="p4_name" placeholder="닉네임을 입력하세요">
+        <p></p>
+    </div>
+    <div class="p4_comment">
+        <textarea type="text" class="form-control" id="p4_comment" placeholder="자유롭게 한마디 남기기"></textarea>
+    </div>
+    <div class="p4_post-btn">
+        <button type="button" class="btn btn-dark" onclick="p4_save_comment()">등록</button>
+    </div>
+</div>
+<div class="p4_card">
+    <div class="p4_card-box" id="p4_comment-list">
+    </div>
+</div>
+</body>
+</html>

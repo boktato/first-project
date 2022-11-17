@@ -12,39 +12,39 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def home():
-    return render_template('index.html')
+def p4_home():
+    return render_template('p4_index.html')
 
 
-@app.route("/user", methods=["POST"])
-def user_post():
-    name_receive = request.form['name_give']
-    comment_receive = request.form['comment_give']
+@app.route("/p4_user", methods=["POST"])
+def p4_user_post():
+    p4_name_receive = request.form['p4_name_give']
+    p4_comment_receive = request.form['p4_comment_give']
 
-    user_list = list(db.user.find({}, {'_id': False}))
-    count = len(user_list) + 1
+    p4_user_list = list(db.p4_user.find({}, {'_id': False}))
+    p4_count = len(p4_user_list) + 1
 
     doc = {
-        'num': count,
-        'name': name_receive,
-        'comment': comment_receive,
-        'done': 0
+        'p4_num': p4_count,
+        'p4_name': p4_name_receive,
+        'p4_comment': p4_comment_receive,
+        'p4_done': 0
     }
 
-    db.user.insert_one(doc)
+    db.p4_user.insert_one(doc)
     return jsonify({'msg': '저장 완료'})
 
 
-@app.route("/user", methods=["GET"])
-def user_get():
-    comment_list = list(db.user.find({}, {'_id': False}))
-    return jsonify({'comments': comment_list})
+@app.route("/p4_user", methods=["GET"])
+def p4_user_get():
+    p4_comment_list = list(db.p4_user.find({}, {'_id': False}))
+    return jsonify({'p4_comments': p4_comment_list})
 
 
-@app.route("/user/done", methods=["POST"])
-def delete_comment():
-    num_receive = request.form['num_give']
-    db.user.update_one({'num': int(num_receive)}, {'$set': {'done': 1}})
+@app.route("/p4_user/p4_done", methods=["POST"])
+def p4_delete_comment():
+    p4_num_receive = request.form['p4_num_give']
+    db.p4_user.update_one({'p4_num': int(p4_num_receive)}, {'$set': {'p4_done': 1}})
     return jsonify({'msg': '삭제 완료'})
 
 
