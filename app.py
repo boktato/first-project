@@ -15,6 +15,24 @@ app = Flask(__name__)
 def p4_home():
     return render_template('p4_index.html')
 
+app.route('/p2')
+def p2home():
+   return render_template('p2.html')
+
+@app.route("/p2_comment", methods=["POST"])
+def comment_post():
+    comment_receive = request.form['comment_give']
+    doca = {
+        'comment': comment_receive,
+    }
+    db.p2_comment.insert_one(doca)
+    return jsonify({'msg':'입력 완료!'})
+
+@app.route("/p2_comment", methods=["GET"])
+def comment_get():
+    comment_list = list(db.p2_comment.find({}, {'_id': False}))
+    return jsonify({'comment':comment_list})
+
 
 @app.route("/p4_user", methods=["POST"])
 def p4_user_post():
